@@ -17,9 +17,6 @@ def statseeker_export(username,password):
 
     devices = requests.get(url, headers=headers, auth=(username, password), verify=False).json()
 
-    print(f"\n{'HOSTNAME':40} {'IP ADDRESS':20} {'VENDOR':30}")
-    print("="*90)
-
     device_types = ['Juniper', 'Cisco', 'Brocade', 'Foundry']
     device_list = []
 
@@ -40,9 +37,12 @@ def main():
 
     device_list = statseeker_export(credentials.statseeker_username,credentials.statseeker_password)
 
-    for device in device_list:
+    # print(len(device_list))
 
-        print(f"{device['name']:40} {device['ipaddress']:20} {device['vendor']:30}")
+    # print(f"\n{'HOSTNAME':40} {'IP ADDRESS':20} {'VENDOR':30}")
+    # print("="*90)
+    # for device in device_list:
+    #     print(f"{device['name']:40} {device['ipaddress']:20} {device['vendor']:30}")
 
 
 if __name__ == '__main__':
