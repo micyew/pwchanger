@@ -37,7 +37,7 @@ def main():
     """"""
     requests.packages.urllib3.disable_warnings()
 
-    device_list = statseeker_export('netops','netops')
+    device_list = statseeker_export(credentials.statseeker_username,credentials.statseeker_password)
 
     for device in device_list:
 
