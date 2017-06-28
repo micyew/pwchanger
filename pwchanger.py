@@ -1,6 +1,7 @@
 #!.venv/bin/python
 import requests
 import json
+import credentials
 
 def statseeker_export(username,password):
     """"""
@@ -45,11 +46,9 @@ def main():
 
 
 if __name__ == '__main__':
-
     try:
         main()
     except KeyboardInterrupt:
         print("\n\nCTRL+C Pressed. Exiting.\n\n")
         pass
-
 exit()
