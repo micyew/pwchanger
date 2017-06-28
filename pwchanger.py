@@ -30,6 +30,12 @@ def statseeker_export(username,password):
                 device_list.append(tempdict)
 
     return device_list
+
+def juniper_connect(username,password,ipaddress):
+    """"""
+
+def other_connect(username,password,ipaddress):
+    """"""
         
 def main():
     """"""
@@ -37,12 +43,7 @@ def main():
 
     device_list = statseeker_export(credentials.statseeker_username,credentials.statseeker_password)
 
-    # print(len(device_list))
 
-    # print(f"\n{'HOSTNAME':40} {'IP ADDRESS':20} {'VENDOR':30}")
-    # print("="*90)
-    # for device in device_list:
-    #     print(f"{device['name']:40} {device['ipaddress']:20} {device['vendor']:30}")
 
 
 if __name__ == '__main__':
