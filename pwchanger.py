@@ -68,25 +68,42 @@ def statseeker_export(username,password):
     return device_list
 
 def napalm_this_bitch(password_list, name, ipaddress, napalm_driver):
+    """"""
+    print(f'{name:40}{ipaddress:20}{napalm_driver:10}', end='')
     for password in password_list:
         try:
+            if napalm_driver == "ios":
+                optional_args = {'dest_file_system':'flash:'}
+            elif napalm_driver == "junos":
+                optional_args = {}
             driver = napalm.get_network_driver(napalm_driver)
-            device = driver(hostname=ipaddress, username='admin', password=password, optional_args={'port': 22})
+            device = driver(hostname=ipaddress, username='ad-cajones2', password=password, optional_args=optional_args)
             device.open()
-            print(f'{name:40} {ipaddress:20} {napalm_driver:10} {"SUCCESS":10} {password:10}')
             device.close()
-            break
+            return password
         except:
-            print(f'{name:40} {ipaddress:20} {napalm_driver:10} {"FAILED":10} {password:10}')
-            pass        
+            pass 
 
 def main():
     """"""
-
-    password_list = get_passwords('passwords.txt')
+    password_list = get_passwords('passwords_ad.txt')
     device_list = statseeker_export(credentials.statseeker_username,credentials.statseeker_password)
+    device_fail_list = []
+    print(f'\n{"HOSTNAME":40}{"IP ADDRESS":20}{"DRIVER":10}{"STATUS":10}')
+    print('=' * 100)
     for device in device_list:
-        napalm_this_bitch(password_list, device['name'], device['ipaddress'], device['napalm_driver'])
+        password = napalm_this_bitch(password_list, device['name'], device['ipaddress'], device['napalm_driver'])
+        if password:
+            print(f'{"OK":10}')
+        else:
+            print(f'{"*** NO PASS ***":10}')
+            device_fail_list.append(device)
+
+    print('FAILED DEVICES')
+    print('=' * 100)
+    for device in device_fail_list:
+        print(f"{device['name']:40}{device['ipaddress']:20}{device['vendor']:10}")
+
 
 if __name__ == '__main__':
     try:
