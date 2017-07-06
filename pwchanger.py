@@ -1,4 +1,10 @@
 #!.venv/bin/python
+
+""" Requirements:
+    - Python >=3.6 (because of the extensive use of f-strings)
+    - Requests
+    - Napalm
+"""
 import requests
 import json
 import credentials
@@ -68,7 +74,18 @@ def statseeker_export(username,password):
     return device_list
 
 def napalm_this_bitch(password_list, name, ipaddress, napalm_driver):
-    """"""
+    """ Connect to the device.
+        This will try every password in the list in order. It is a good
+        idea to ensure that the most common passwords are at the top of
+        the file.
+
+        If the driver is "ios", statically set the filesystem as "flash:"
+        so that the netmiko drivers do not attempt an auto discovery with
+        a "dir" command that will cause the script to fail on Foundry 
+        devices.
+
+        If a password is found, return it.
+    """
     print(f'{name:40}{ipaddress:20}{napalm_driver:10}', end='')
     for password in password_list:
         try:
@@ -103,7 +120,6 @@ def main():
     print('=' * 100)
     for device in device_fail_list:
         print(f"{device['name']:40}{device['ipaddress']:20}{device['vendor']:10}")
-
 
 if __name__ == '__main__':
     try:
