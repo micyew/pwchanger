@@ -86,15 +86,23 @@ def main():
     
     result_list = handler(device_list)
 
-    failed = 0
+    sshcount = 0
+    telnetcount = 0
+    failedcount = 0
 
     for result in result_list:
-        if not result['ssh_result'] and not result['telnet_result']:
-            failed += 1
+        if result['ssh_result']:
+            sshcount += 1
+        elif result['telnet_result']:
+            telnetcount += 1
+        else:
+            failedcount += 1
             # print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
 
-    print(f"\nItems processed: {len(result_list)}")
-    print(f"\nItems failed: {failed}")
+    print(f"\nDevices processed: {len(result_list)}")
+    print(f"\nSSH Devices: {sshcount}")
+    print(f"\nTelnet Devices: {telnetcount}")
+    print(f"\nFailed Devices: {failedcount}")
     
 
     print(f"\n*** It took: {datetime.now() - startTime} to execute this script ***")
