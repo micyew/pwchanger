@@ -58,8 +58,17 @@ def do_tcp_ping(host, port):
         return False
 
 def worker(device):
-    result = do_tcp_ping(device['ipaddress'], port=22)
-    result_dict = {'name': device['name'], 'ipaddress': device['ipaddress'], 'result': result}
+    ssh_result = False
+    telnet_result = False
+    ssh_result = do_tcp_ping(device['ipaddress'], port=22)
+    if not ssh_result:
+        telnet_result = do_tcp_ping(device['ipaddress'], port=23)
+    result_dict = {
+                'name': device['name'], 
+                'ipaddress': device['ipaddress'], 
+                'ssh_result': ssh_result, 
+                'telnet_result': telnet_result
+                }
     return result_dict
 
 def handler(device_list):
@@ -77,8 +86,17 @@ def main():
     
     result_list = handler(device_list)
 
+    failed = 0
+
+    for result in result_list:
+        if not result['ssh_result'] and not result['telnet_result']:
+            failed += 1
+            print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
+
     print(f"\nItems processed: {len(result_list)}")
+    print(f"\nItems failed: {failed}")
     
+
     print(f"\n*** It took: {datetime.now() - startTime} to execute this script ***")
 
 if __name__ == '__main__':
