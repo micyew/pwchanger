@@ -91,7 +91,7 @@ def main():
     for result in result_list:
         if not result['ssh_result'] and not result['telnet_result']:
             failed += 1
-            print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
+            # print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
 
     print(f"\nItems processed: {len(result_list)}")
     print(f"\nItems failed: {failed}")
