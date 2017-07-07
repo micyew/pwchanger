@@ -99,10 +99,10 @@ def main():
             failedcount += 1
             # print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
 
-    print(f"\nDevices processed: {len(result_list)}")
-    print(f"\nSSH Devices: {sshcount}")
-    print(f"\nTelnet Devices: {telnetcount}")
-    print(f"\nFailed Devices: {failedcount}")
+    print(f"Devices processed: {len(result_list)}")
+    print(f"SSH Devices: {sshcount}")
+    print(f"Telnet Devices: {telnetcount}")
+    print(f"Failed Devices: {failedcount}")
     
 
     print(f"\n*** It took: {datetime.now() - startTime} to execute this script ***")
