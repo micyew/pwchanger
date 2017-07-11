@@ -11,7 +11,7 @@ import credentials
 import socket
 import re
 import subprocess
-from multiprocessing import Lock, Process, Queue, Pool
+from multiprocessing import Pool
 from do_latency import pyping
 from datetime import datetime
 
@@ -21,6 +21,8 @@ def statseeker_export(username,password):
         - Uses the base v5 API
         - Uses the cdt_device object
         - Returns the name, IP address, and SNMP Description fields
+        - Also returns .ping_poll and .snmp_poll fields (For the filters
+          to work, the field being filtered must be included)
         - Returns only devices where SNMP and ICMP polling are enabled
         - Returns only devices from groups 23, 26, 161562, and 161563:
             - 23 = Juniper All
@@ -42,7 +44,7 @@ def statseeker_export(username,password):
     requests.packages.urllib3.disable_warnings()
     headers = {'Accept':'application/json', 'Content-Type':'application/json'}
     urlbase = 'https://statseeker.sempra.com/api/latest/cdt_device/'
-    fields  = '?fields=name,.ipaddress,SNMPv2-MIB.sysDescr'
+    fields  = '?fields=name,.ipaddress,SNMPv2-MIB.sysDescr,.ping_poll,.snmp_poll'
     filters = '&.snmp_poll_filter=IS(\u0027on\u0027)&.ping_poll_filter=IS(\u0027on\u0027)'
     links   = '&links=none'
     limit   = '&limit=0'
