@@ -97,7 +97,7 @@ def main():
             telnetcount += 1
         else:
             failedcount += 1
-            # print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
+            print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
 
     print(f"Devices processed: {len(result_list)}")
     print(f"SSH Devices: {sshcount}")
