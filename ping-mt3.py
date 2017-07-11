@@ -14,6 +14,29 @@ from do_latency import pyping
 from datetime import datetime
 
 def statseeker_export(username,password):
+    """ Grab all network devices from Statseeker.
+        The API URL contains the following:
+        - Uses the base v5 API
+        - Uses the cdt_device object
+        - Returns the name, IP address, and SNMP Description fields
+        - Returns only devices where SNMP and ICMP polling are enabled
+        - Returns only devices from groups 23, 26, 161562, and 161563:
+            - 23 = Juniper All
+            - 26 = Cisco All
+            - 161562 = Foundry All
+            - 161563 = Brocade All 
+        - Uses "limit 0" to return all devices (pagination off)
+        - Does not display links. Should not matter but makes debug
+            printing of the API call result much easier to read
+
+        Cuts the SNMP Description down to just the first word to define vendor
+
+        Iterates through the results and dumps the name, ipaddress and vendor 
+        into a list of dicts.
+
+        Since we're using the napalm library, we also need to either classify the
+        device type as either ios or junos. 
+    """    
     requests.packages.urllib3.disable_warnings()
     headers = {'Accept':'application/json', 'Content-Type':'application/json'}
     urlbase = 'https://statseeker.sempra.com/api/latest/cdt_device/'
@@ -44,7 +67,13 @@ def statseeker_export(username,password):
     return device_list
 
 def get_skiplist(username,password):
-    """"""
+    """ Grab a list of currently down devices in Statseeker
+        There's no point in attempting to connect to known-down devices
+        This API call unfortunately doesn't seem to allow for filtering 
+        by group, so this grabs the entire list - even items that are not
+        on our 'unreachable' list on our dashboard. Therefore this list
+        will always be significantly larger than the list on the dashboard.
+    """
     requests.packages.urllib3.disable_warnings()
     headers = {'Accept':'application/json', 'Content-Type':'application/json'}
     urlbase = 'https://statseeker.sempra.com/api/latest/event/'
@@ -64,10 +93,21 @@ def get_skiplist(username,password):
     return skiplist
 
 def do_ping(host):
-    """"""
+    """ Simple UDP Ping
+        Uses Digital Ocean's pyping since the official
+        does not work in Python3
+        Using UDP to bypass sudo requirements.
+    """
     return pyping.ping(host, udp=True) != None
 
 def do_tcp_ping(host, port):
+    """ Does a TCP 'ping'
+        Simply attempts a socket connection on the specified port
+        22 = SSH
+        23 = Telnet
+        Timeout is 1 second
+        Code "borrowed" from yantisj
+    """
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(1)
@@ -78,6 +118,12 @@ def do_tcp_ping(host, port):
         return False
 
 def worker(device):
+    """ Does the actual work
+        First, attempts a TCP 'ping' on port 22 (SSH)
+        If that fails, attempts on port 23 (Telnet)
+        Dumps the result into a dict
+        Returns that dict
+    """
     ssh_result = False
     telnet_result = False
     ssh_result = do_tcp_ping(device['ipaddress'], port=22)
@@ -92,6 +138,11 @@ def worker(device):
     return result_dict
 
 def handler(device_list):
+    """ Sets up the multiprocessing pools
+        Sends the device_list to the worker() function
+        Adds the dict passed by the worker() function to a result_list lict
+        Returns the result_list lict
+    """
     result_list = []
     pool = Pool(processes=32)
     for result_dict in pool.imap(worker, device_list):
