@@ -9,7 +9,6 @@ import requests
 import json
 import credentials
 import socket
-from collections import Counter
 from multiprocessing import Lock, Process, Queue, Pool
 from do_latency import pyping
 from datetime import datetime
@@ -123,7 +122,7 @@ def main():
             failedcount += 1
             print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
 
-    sshcount2 = len(list(filter(lambda x: x['ssh_result'] not False, result_list)))
+    sshcount2 = len(list(filter(lambda x: x['ssh_result'] != False, result_list)))
 
     print(f"Devices processed: {len(result_list)}")
     print(f"SSH Devices: {sshcount}")
