@@ -109,8 +109,6 @@ def main():
     
     print('Device list has this many devices:', len(device_list))
 
-    print('Skiplist has this many devices:', len(skiplist))
-
     print('Filtered Device list has this many devices:', len(device_list2))
 
     # result_list = handler(device_list)
