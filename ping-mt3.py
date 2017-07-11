@@ -124,7 +124,7 @@ def main():
 
     ssh_list = list(filter(lambda x: x['ssh_result'] != False, result_list))
     telnet_list = list(filter(lambda x: x['telnet_result'] != False, result_list))
-    failed_list = []
+    failed_list = list(filter(lambda x: x['ssh_result'] == False and x['telnet_result'] == False, result_list))
 
     print(f"Devices processed: {len(result_list)}")
     print(f"SSH Devices: {len(ssh_list)}")
