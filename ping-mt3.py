@@ -47,7 +47,7 @@ def statseeker_export(username,password):
     links   = '&links=none'
     limit   = '&limit=0'
     groups  = '&groups=23,26,161562,161563'
-    url = urlbase + fields + filters + links + limit
+    url = urlbase + fields + filters + links + limit + groups
 
     devices = requests.get(url, headers=headers, auth=(username, password), verify=False).json()
 
