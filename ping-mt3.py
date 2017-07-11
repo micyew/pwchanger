@@ -109,23 +109,14 @@ def main():
 
     result_list = handler(device_list)
 
-    sshcount = 0
-    telnetcount = 0
-    failedcount = 0
-
-    for result in result_list:
-        if result['ssh_result']:
-            sshcount += 1
-        elif result['telnet_result']:
-            telnetcount += 1
-        else:
-            failedcount += 1
-            print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
-
     ssh_list = list(filter(lambda x: x['ssh_result'] != False, result_list))
     telnet_list = list(filter(lambda x: x['telnet_result'] != False, result_list))
     failed_list = list(filter(lambda x: x['ssh_result'] == False and x['telnet_result'] == False, result_list))
 
+    for failed in failed_list:
+        print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
+
+    print('='*100)
     print(f"Devices processed: {len(result_list)}")
     print(f"SSH Devices: {len(ssh_list)}")
     print(f"Telnet Devices: {len(telnet_list)}")
