@@ -199,10 +199,10 @@ def main():
     print('='*100)
 
     print('\nPING BUT NO SSH/TELNET:')
-    for device in failed_list_pingable:
+    for device in failed_list_not_pingable:
         print(f"{device['name']:25}{device['ipaddress']:20}")
 
-    print('\nPING BUT NO SSH/TELNET:')
+    print('\nNO PING AND NO SSH/TELNET:')
     for device in failed_list_pingable:
         print(f"{device['name']:25}{device['ipaddress']:20}")
 
