@@ -9,6 +9,7 @@ import requests
 import json
 import credentials
 import socket
+from collections import Counter
 from multiprocessing import Lock, Process, Queue, Pool
 from do_latency import pyping
 from datetime import datetime
@@ -126,7 +127,12 @@ def main():
     print(f"SSH Devices: {sshcount}")
     print(f"Telnet Devices: {telnetcount}")
     print(f"Failed Devices: {failedcount}")
-    
+
+    print('='*100)
+    counts = Counter(result_list)
+    print(counts)    
+    print('='*100)
+
 
     print(f"\n*** It took: {datetime.now() - startTime} to execute this script ***")
 
