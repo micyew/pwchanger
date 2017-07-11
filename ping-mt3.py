@@ -9,12 +9,9 @@ import requests
 import json
 import credentials
 import socket
-import sys
 from multiprocessing import Lock, Process, Queue, Pool
 from do_latency import pyping
 from datetime import datetime
-
-assert sys.version_info >= (3,6)
 
 def statseeker_export(username,password):
     requests.packages.urllib3.disable_warnings()
@@ -45,6 +42,26 @@ def statseeker_export(username,password):
                     tempdict['napalm_driver'] = "ios"
                 device_list.append(tempdict)
     return device_list
+
+def get_skiplist(username,password):
+    """"""
+    requests.packages.urllib3.disable_warnings()
+    headers = {'Accept':'application/json', 'Content-Type':'application/json'}
+    urlbase = 'https://statseeker.sempra.com/api/latest/event/'
+    fields  = '?fields=device,description,status&status_formats=time,state'
+    filters = '&description_filter==\u0027ping_state\u0027&status_filter==\u0027down\u0027&status_filter_format=state'
+    links   = '&links=none'
+    limit   = '&limit=0'
+    url = urlbase + fields + filters + links + limit
+
+    down_devices = requests.get(url, headers=headers, auth=(username, password), verify=False).json()
+
+    skiplist = []
+
+    for device in down_devices['data']['objects'][0]['data']:
+        skiplist.append(device['device'])
+
+    return skiplist
 
 def do_ping(host):
     """"""
@@ -86,26 +103,35 @@ def main():
     startTime = datetime.now()
     
     device_list = statseeker_export(credentials.statseeker_username,credentials.statseeker_password)
+    skiplist = get_skiplist(credentials.statseeker_username,credentials.statseeker_password)
+
+    device_list2 = list(filter(lambda x: x['name'] not in skiplist, device_list))
     
-    result_list = handler(device_list)
+    print('Device list has this many devices:', len(device_list))
 
-    sshcount = 0
-    telnetcount = 0
-    failedcount = 0
+    print('Skiplist has this many devices:', len(skiplist))
 
-    for result in result_list:
-        if result['ssh_result']:
-            sshcount += 1
-        elif result['telnet_result']:
-            telnetcount += 1
-        else:
-            failedcount += 1
-            print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
+    print('Filtered Device list has this many devices:', len(device_list2))
 
-    print(f"Devices processed: {len(result_list)}")
-    print(f"SSH Devices: {sshcount}")
-    print(f"Telnet Devices: {telnetcount}")
-    print(f"Failed Devices: {failedcount}")
+    # result_list = handler(device_list)
+
+    # sshcount = 0
+    # telnetcount = 0
+    # failedcount = 0
+
+    # for result in result_list:
+    #     if result['ssh_result']:
+    #         sshcount += 1
+    #     elif result['telnet_result']:
+    #         telnetcount += 1
+    #     else:
+    #         failedcount += 1
+    #         print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
+
+    # print(f"Devices processed: {len(result_list)}")
+    # print(f"SSH Devices: {sshcount}")
+    # print(f"Telnet Devices: {telnetcount}")
+    # print(f"Failed Devices: {failedcount}")
     
 
     print(f"\n*** It took: {datetime.now() - startTime} to execute this script ***")
