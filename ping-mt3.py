@@ -9,6 +9,8 @@ import requests
 import json
 import credentials
 import socket
+import re
+import subprocess
 from multiprocessing import Lock, Process, Queue, Pool
 from do_latency import pyping
 from datetime import datetime
@@ -99,6 +101,31 @@ def do_ping(host):
         Using UDP to bypass sudo requirements.
     """
     return pyping.ping(host, udp=True) != None
+
+def ping(host):
+    """ Ping the address/hostname
+        return True if packet loss is less than 25%. 
+
+        All other results return False or print and error.
+
+        Code "borrowed" from @tyler_k
+    """
+    exp = re.compile(r"\s(\d{1,3})\%\s")
+    try:
+        test = subprocess.Popen(["ping", "-c 5", "-W 2", host],
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, error = test.communicate()
+        if out:
+            stats = re.search(exp, out.decode('utf-8'))
+            loss = int(stats.group(1))
+
+            return loss <= 60
+
+        else:
+            return False
+
+    except subprocess.CalledProcessError:
+        return False
 
 def do_tcp_ping(host, port):
     """ Does a TCP 'ping'
