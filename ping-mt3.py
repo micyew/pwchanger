@@ -153,6 +153,7 @@ def worker(device):
     """
     ssh_result = False
     telnet_result = False
+    ping_result = False
     ssh_result = ping_tcp(device['ipaddress'], port=22)
     if not ssh_result:
         telnet_result = ping_tcp(device['ipaddress'], port=23)
