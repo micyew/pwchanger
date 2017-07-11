@@ -94,7 +94,7 @@ def get_skiplist(username,password):
 
     return skiplist
 
-def do_ping(host):
+def ping_udp(host):
     """ Simple UDP Ping
         Uses Digital Ocean's pyping since the official
         does not work in Python3
@@ -102,7 +102,7 @@ def do_ping(host):
     """
     return pyping.ping(host, udp=True) != None
 
-def ping(host):
+def ping_cli(host):
     """ Ping the address/hostname
         return True if packet loss is less than 25%. 
 
@@ -127,7 +127,7 @@ def ping(host):
     except subprocess.CalledProcessError:
         return False
 
-def do_tcp_ping(host, port):
+def ping_tcp(host, port):
     """ Does a TCP 'ping'
         Simply attempts a socket connection on the specified port
         22 = SSH
@@ -153,9 +153,9 @@ def worker(device):
     """
     ssh_result = False
     telnet_result = False
-    ssh_result = do_tcp_ping(device['ipaddress'], port=22)
+    ssh_result = ping_tcp(device['ipaddress'], port=22)
     if not ssh_result:
-        telnet_result = do_tcp_ping(device['ipaddress'], port=23)
+        telnet_result = ping_tcp(device['ipaddress'], port=23)
     result_dict = {
                 'name': device['name'], 
                 'ipaddress': device['ipaddress'], 
@@ -194,7 +194,7 @@ def main():
     for failed in failed_list:
         try:
             result_ping = False
-            result_ping = do_ping(failed['ipaddress'])
+            result_ping = ping_cli(failed['ipaddress'])
             print(result_ping)
         except Exception as e:
             print('Failed', e)
