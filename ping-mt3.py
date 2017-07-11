@@ -122,13 +122,14 @@ def main():
             failedcount += 1
             print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
 
-    sshcount2 = len(filter(lambda x: x['ssh_result'] != False, result_list))
+    ssh_list = list(filter(lambda x: x['ssh_result'] != False, result_list))
+    telnet_list = list(filter(lambda x: x['telnet_result'] != False, result_list))
+    failed_list = 0
 
     print(f"Devices processed: {len(result_list)}")
-    print(f"SSH Devices: {sshcount}")
-    print(f"SSH Devices 2: {sshcount2}")
-    print(f"Telnet Devices: {telnetcount}")
-    print(f"Failed Devices: {failedcount}")
+    print(f"SSH Devices: {len(ssh_list)}")
+    print(f"Telnet Devices: {len(telnet_list)}")
+    print(f"Failed Devices: {len(failed_list)}")
 
     print(f"\n*** It took: {datetime.now() - startTime} to execute this script ***")
 
