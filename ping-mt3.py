@@ -104,10 +104,9 @@ def ping_udp(host):
 
 def ping_cli(host):
     """ Ping the address/hostname
-        return True if packet loss is less than 60%. 
-
+        Sends 5 ICMP probes
+        Return True if packet loss is less than 60%. 
         All other results return False or print and error.
-
         Code "borrowed" from @tyler_k
     """
     exp = re.compile(r"\s(\d{1,3})\%\s")
@@ -124,7 +123,7 @@ def ping_cli(host):
         else:
             return False
 
-    except subprocess.CalledProcessError:
+    except:
         return False
 
 def ping_tcp(host, port):
@@ -199,11 +198,11 @@ def main():
     print('='*100)
 
     print('\nPING BUT NO SSH/TELNET:')
-    for device in failed_list_not_pingable:
+    for device in failed_list_pingable:
         print(f"{device['name']:25}{device['ipaddress']:20}")
 
     print('\nNO PING AND NO SSH/TELNET:')
-    for device in failed_list_pingable:
+    for device in failed_list_not_pingable:
         print(f"{device['name']:25}{device['ipaddress']:20}")
 
     print('='*100)
