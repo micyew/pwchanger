@@ -162,7 +162,7 @@ def worker(device):
                 'name': device['name'], 
                 'ipaddress': device['ipaddress'], 
                 'ssh_result': ssh_result, 
-                'telnet_result': telnet_result
+                'telnet_result': telnet_result,
                 'ping_result': ping_result
                 }
     return result_dict
