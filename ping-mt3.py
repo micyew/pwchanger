@@ -104,7 +104,7 @@ def ping_udp(host):
 
 def ping_cli(host):
     """ Ping the address/hostname
-        return True if packet loss is less than 25%. 
+        return True if packet loss is less than 60%. 
 
         All other results return False or print and error.
 
@@ -195,7 +195,6 @@ def main():
         try:
             result_ping = False
             result_ping = ping_cli(failed['ipaddress'])
-            print(result_ping)
         except Exception as e:
             print('Failed', e)
         finally:
