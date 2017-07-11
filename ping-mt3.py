@@ -132,12 +132,12 @@ def ping_tcp(host, port):
         Simply attempts a socket connection on the specified port
         22 = SSH
         23 = Telnet
-        Timeout is 1 second
+        Timeout is 5 seconds
         Code "borrowed" from yantisj
     """
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.settimeout(1)
+        s.settimeout(5)
         s.connect((host, int(port)))
         s.shutdown(socket.SHUT_RD)
         return True
@@ -156,11 +156,14 @@ def worker(device):
     ssh_result = ping_tcp(device['ipaddress'], port=22)
     if not ssh_result:
         telnet_result = ping_tcp(device['ipaddress'], port=23)
+        if not telnet_result:
+            ping_result = ping_cli(device['ipaddress'])
     result_dict = {
                 'name': device['name'], 
                 'ipaddress': device['ipaddress'], 
                 'ssh_result': ssh_result, 
                 'telnet_result': telnet_result
+                'ping_result': ping_result
                 }
     return result_dict
 
@@ -191,14 +194,7 @@ def main():
     telnet_list = list(filter(lambda x: x['telnet_result'] != False, result_list))
     failed_list = list(filter(lambda x: x['ssh_result'] == False and x['telnet_result'] == False, result_list))
 
-    for failed in failed_list:
-        try:
-            result_ping = False
-            result_ping = ping_cli(failed['ipaddress'])
-        except Exception as e:
-            print('Failed', e)
-        finally:
-            print(f"{failed['name']:25}{failed['ipaddress']:20}{str(result_ping):10}")
+    # print(f"{failed['name']:25}{failed['ipaddress']:20}{str(result_ping):10}")
 
     print('='*100)
     print(f"Devices processed: {len(result_list)}")
