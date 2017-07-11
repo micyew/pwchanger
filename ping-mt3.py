@@ -110,7 +110,8 @@ def main():
 
     result_list = handler(device_list)
 
-    sshcount = 0
+    # sshcount = 0
+    sshcount = len(list(filter(lambda x: x['ssh_result'] not False, result_list)))
     telnetcount = 0
     failedcount = 0
 
@@ -127,12 +128,6 @@ def main():
     print(f"SSH Devices: {sshcount}")
     print(f"Telnet Devices: {telnetcount}")
     print(f"Failed Devices: {failedcount}")
-
-    print('='*100)
-    counts = Counter(result_list)
-    print(counts)    
-    print('='*100)
-
 
     print(f"\n*** It took: {datetime.now() - startTime} to execute this script ***")
 
