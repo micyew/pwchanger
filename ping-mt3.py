@@ -196,9 +196,18 @@ def main():
     failed_list_pingable = list(filter(lambda x: x['ssh_result'] == False and x['telnet_result'] == False and x['ping_result'] == True, result_list))
     failed_list_not_pingable = list(filter(lambda x: x['ssh_result'] == False and x['telnet_result'] == False and x['ping_result'] == False, result_list))
 
-    # print(f"{failed['name']:25}{failed['ipaddress']:20}{str(result_ping):10}")
+    print('='*100)
+
+    print('\nPING BUT NO SSH/TELNET:')
+    for device in failed_list_pingable:
+        print(f"{device['name']:25}{device['ipaddress']:20}")
+
+    print('\nPING BUT NO SSH/TELNET:')
+    for device in failed_list_pingable:
+        print(f"{device['name']:25}{device['ipaddress']:20}")
 
     print('='*100)
+
     print(f"Devices processed: {len(result_list)}")
     print(f"SSH Devices: {len(ssh_list)}")
     print(f"Telnet Devices: {len(telnet_list)}")
