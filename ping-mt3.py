@@ -165,7 +165,7 @@ def main():
     failed_list = list(filter(lambda x: x['ssh_result'] == False and x['telnet_result'] == False, result_list))
 
     for failed in failed_list:
-        print(f"{failed['name']:25}{failed['ipaddress']:20}{str(failed['ssh_result']):10}{str(failed['telnet_result']):10}")
+        print(f"{failed['name']:25}{failed['ipaddress']:20}")
 
     print('='*100)
     print(f"Devices processed: {len(result_list)}")
