@@ -105,31 +105,27 @@ def main():
     device_list = statseeker_export(credentials.statseeker_username,credentials.statseeker_password)
     skiplist = get_skiplist(credentials.statseeker_username,credentials.statseeker_password)
 
-    device_list2 = list(filter(lambda x: x['name'] not in skiplist, device_list))
-    
-    print('Device list has this many devices:', len(device_list))
+    device_list = list(filter(lambda x: x['name'] not in skiplist, device_list))
 
-    print('Filtered Device list has this many devices:', len(device_list2))
+    result_list = handler(device_list)
 
-    # result_list = handler(device_list)
+    sshcount = 0
+    telnetcount = 0
+    failedcount = 0
 
-    # sshcount = 0
-    # telnetcount = 0
-    # failedcount = 0
+    for result in result_list:
+        if result['ssh_result']:
+            sshcount += 1
+        elif result['telnet_result']:
+            telnetcount += 1
+        else:
+            failedcount += 1
+            print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
 
-    # for result in result_list:
-    #     if result['ssh_result']:
-    #         sshcount += 1
-    #     elif result['telnet_result']:
-    #         telnetcount += 1
-    #     else:
-    #         failedcount += 1
-    #         print(f"{result['name']:25}{result['ipaddress']:20}{str(result['ssh_result']):10}{str(result['telnet_result']):10}")
-
-    # print(f"Devices processed: {len(result_list)}")
-    # print(f"SSH Devices: {sshcount}")
-    # print(f"Telnet Devices: {telnetcount}")
-    # print(f"Failed Devices: {failedcount}")
+    print(f"Devices processed: {len(result_list)}")
+    print(f"SSH Devices: {sshcount}")
+    print(f"Telnet Devices: {telnetcount}")
+    print(f"Failed Devices: {failedcount}")
     
 
     print(f"\n*** It took: {datetime.now() - startTime} to execute this script ***")
