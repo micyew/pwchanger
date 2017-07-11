@@ -165,7 +165,12 @@ def main():
     failed_list = list(filter(lambda x: x['ssh_result'] == False and x['telnet_result'] == False, result_list))
 
     for failed in failed_list:
-        print(f"{failed['name']:25}{failed['ipaddress']:20}")
+        try:
+            result_ping = False
+            result_ping = do_ping(failed['ipaddress'])
+            print(f"{failed['name']:25}{failed['ipaddress']:20}{str(result_ping):10}")
+        except:
+            pass
 
     print('='*100)
     print(f"Devices processed: {len(result_list)}")
