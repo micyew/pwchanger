@@ -193,7 +193,8 @@ def main():
 
     ssh_list = list(filter(lambda x: x['ssh_result'] != False, result_list))
     telnet_list = list(filter(lambda x: x['telnet_result'] != False, result_list))
-    failed_list = list(filter(lambda x: x['ssh_result'] == False and x['telnet_result'] == False, result_list))
+    failed_list_pingable = list(filter(lambda x: x['ssh_result'] == False and x['telnet_result'] == False and x['ping_result'] == True, result_list))
+    failed_list_not_pingable = list(filter(lambda x: x['ssh_result'] == False and x['telnet_result'] == False and x['ping_result'] == False, result_list))
 
     # print(f"{failed['name']:25}{failed['ipaddress']:20}{str(result_ping):10}")
 
@@ -201,7 +202,8 @@ def main():
     print(f"Devices processed: {len(result_list)}")
     print(f"SSH Devices: {len(ssh_list)}")
     print(f"Telnet Devices: {len(telnet_list)}")
-    print(f"Failed Devices: {len(failed_list)}")
+    print(f"Failed but Pingable Devices: {len(failed_list_pingable)}")
+    print(f"Failed but Non-Pingable Devices: {len(failed_list_not_pingable)}")
 
     print(f"\n*** It took: {datetime.now() - startTime} to execute this script ***")
 
