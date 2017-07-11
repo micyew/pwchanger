@@ -168,9 +168,10 @@ def main():
         try:
             result_ping = False
             result_ping = do_ping(failed['ipaddress'])
+        except Exception as e:
+            print('Failed', e)
+        finally:
             print(f"{failed['name']:25}{failed['ipaddress']:20}{str(result_ping):10}")
-        except:
-            pass
 
     print('='*100)
     print(f"Devices processed: {len(result_list)}")
