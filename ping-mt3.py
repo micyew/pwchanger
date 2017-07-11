@@ -168,6 +168,7 @@ def main():
         try:
             result_ping = False
             result_ping = do_ping(failed['ipaddress'])
+            print(result_ping)
         except Exception as e:
             print('Failed', e)
         finally:
