@@ -9,6 +9,7 @@ import requests
 import json
 import credentials
 import socket
+import sys
 from multiprocessing import Lock, Process, Queue, Pool
 from do_latency import pyping
 from datetime import datetime
@@ -108,6 +109,7 @@ def main():
     print(f"\n*** It took: {datetime.now() - startTime} to execute this script ***")
 
 if __name__ == '__main__':
+    assert sys.version_info >= (3,6)
     try:
         main()
     except KeyboardInterrupt:
